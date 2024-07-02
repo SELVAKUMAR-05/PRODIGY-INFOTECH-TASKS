@@ -1,0 +1,59 @@
+from PIL import Image
+import numpy as np
+
+def encrypt_image(image_path, key):
+    try:
+        # Open the image file
+        img = Image.open(image_path)
+        
+        # Convert image to numpy array for faster pixel manipulation
+        img_array = np.array(img)
+        
+        # Apply XOR operation to each pixel value
+        encrypted_img_array = np.bitwise_xor(img_array, key)
+        
+        # Create encrypted image from numpy array
+        encrypted_img = Image.fromarray(encrypted_img_array)
+        
+        # Save encrypted image
+        encrypted_img.save("encrypted_image.png")
+        
+        print("Image encrypted successfully.")
+    except Exception as e:
+        print(f"Error encrypting image: {e}")
+
+def decrypt_image(encrypted_image_path, key):
+    try:
+        # Open the encrypted image file
+        encrypted_img = Image.open(encrypted_image_path)
+        
+        # Convert image to numpy array for faster pixel manipulation
+        encrypted_img_array = np.array(encrypted_img)
+        
+        # Apply XOR operation with the same key to decrypt
+        decrypted_img_array = np.bitwise_xor(encrypted_img_array, key)
+        
+        # Create decrypted image from numpy array
+        decrypted_img = Image.fromarray(decrypted_img_array)
+        
+        # Save decrypted image
+        decrypted_img.save("decrypted_image.png")
+        
+        print("Image decrypted successfully.")
+    except Exception as e:
+        print(f"Error decrypting image: {e}")
+
+def main():
+    print("Welcome to the Image Encryption Tool using XOR.")
+
+    image_path = input("Enter the path to the image file to encrypt: ")
+    key = int(input("Enter the encryption/decryption key (an integer): "))
+    
+    # Encrypt the image
+    encrypt_image(image_path, key)
+    
+    # Decrypt the encrypted image
+    decrypt_image("encrypted_image.png", key)
+
+if __name__ == "__main__":
+    main()
