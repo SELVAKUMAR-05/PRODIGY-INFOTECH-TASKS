@@ -1,0 +1,42 @@
+from scapy.all import sniff, Ether, IP, TCP, UDP
+
+def packet_callback(packet):
+    if packet.haslayer(IP):
+        ip_src = packet[IP].src
+        ip_dst = packet[IP].dst
+        proto = packet[IP].proto
+
+        if packet.haslayer(TCP):
+            proto_name = "TCP"
+            sport = packet[TCP].sport
+            dport = packet[TCP].dport
+            payload = packet[TCP].payload
+        elif packet.haslayer(UDP):
+            proto_name = "UDP"
+            sport = packet[UDP].sport
+            dport = packet[UDP].dport
+            payload = packet[UDP].payload
+        else:
+            proto_name = "Other"
+            sport = None
+            dport = None
+            payload = None
+        
+        print(f"Source IP: {ip_src}, Destination IP: {ip_dst}, Protocol: {proto_name}")
+        if sport and dport:
+            print(f"Source Port: {sport}, Destination Port: {dport}")
+        if payload:
+            print(f"Payload: {payload}")
+        print("---------------------------------------")
+
+def main():
+    print("Packet Sniffer started. Press Ctrl+C to stop.")
+
+    try:
+        # Sniff packets
+        sniff(filter="ip", prn=packet_callback, store=0)
+    except KeyboardInterrupt:
+        print("\nPacket Sniffer stopped.")
+
+if __name__ == "__main__":
+    main()
